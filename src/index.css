@@ -1,0 +1,49 @@
+/* Import Tailwind v4 */
+@import "tailwindcss";
+
+/* 
+  Custom Theme Variables
+*/
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+/* Base layer overrides */
+@layer base {
+  body {
+    @apply bg-gray-200 antialiased;
+  }
+
+  /* Custom Scrollbar Styling for the main app container */
+  /* This ensures the scrollbar track matches our app's light background */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #FCFCFD; /* Matches your app's main background */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #E5E7EB; /* Subtle gray-200 thumb */
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #D1D5DB; /* Slightly darker on hover */
+  }
+}
+
+/* Custom Utilities */
+@layer utilities {
+  /* Use this on the hardware frame itself to keep it clean, 
+     but allow internal scrolling to show our new custom scrollbar */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
