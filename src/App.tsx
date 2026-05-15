@@ -10,6 +10,7 @@ import AiAssistant from './AiAssistant';
 import Notifications from './Notifications';
 import Profile from './Profile';
 
+
 type DeviceType = 'iphone' | 'android' | 'ipad';
 
 export default function App() {
