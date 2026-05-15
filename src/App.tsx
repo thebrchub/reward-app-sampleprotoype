@@ -108,6 +108,8 @@ export default function App() {
         )}
       </AnimatePresence>
 
+      
+
       {/* Floating Action Bar */}
       <div className="fixed top-8 right-8 flex flex-col items-end gap-4 z-[100]">
         <button 
@@ -191,8 +193,8 @@ export default function App() {
         {activeDevice === 'iphone' && <div className="absolute top-3 left-1/2 -translate-x-1/2 w-[110px] h-[30px] bg-[#1a1a1c] rounded-full z-[60] shadow-sm"></div>}
         {activeDevice === 'android' && <div className="absolute top-4 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#1a1a1c] rounded-full z-[60]"></div>}
         
-        {/* Scrollable Area */}
-        <div className={`flex-1 overflow-y-auto bg-[#FCFCFD] ${isIPad ? 'pb-32' : 'pb-24'} pt-[40px]`}>
+        {/* Scrollable Area - FIXED: Added scrollbar-hide back */}
+        <div className={`flex-1 overflow-y-auto bg-[#FCFCFD] scrollbar-hide ${isIPad ? 'pb-32' : 'pb-24'} pt-[40px]`}>
           
           <header className={`px-6 pt-6 pb-4 flex justify-between items-center bg-[#FCFCFD]/90 backdrop-blur-md sticky top-0 z-20 ${isIPad ? 'px-12' : ''}`}>
             <div className="flex items-center gap-3">
