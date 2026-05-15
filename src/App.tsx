@@ -9,7 +9,7 @@ import {
 import AiAssistant from './AiAssistant';
 import Notifications from './Notifications';
 import Profile from './Profile';
-
+import Cards from './Cards'; // Assuming you added the Cards component!
 
 type DeviceType = 'iphone' | 'android' | 'ipad';
 
@@ -22,6 +22,7 @@ export default function App() {
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isCardsOpen, setIsCardsOpen] = useState(false);
 
   const deviceFileNames = {
     iphone: 'iPhone-Prototype',
@@ -72,7 +73,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-200 flex items-center justify-center p-8 font-sans overflow-hidden relative">
       
-      {/* NEW: Increased Size Client Reference Image (Moodboard Style) */}
+      {/* Increased Size Client Reference Image (Moodboard Style) */}
       <AnimatePresence>
         {!isIPad && (
           <motion.div
@@ -107,8 +108,6 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      
-
       {/* Floating Action Bar */}
       <div className="fixed top-8 right-8 flex flex-col items-end gap-4 z-[100]">
         <button 
@@ -120,10 +119,52 @@ export default function App() {
           <span className="text-sm font-medium">{isExporting ? 'Exporting...' : 'Export PNG'}</span>
         </button>
 
-        <div className="flex flex-col gap-1.5 bg-white/90 backdrop-blur-md p-1.5 rounded-2xl shadow-xl border border-gray-100">
-          <button onClick={() => setActiveDevice('iphone')} className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all ${activeDevice === 'iphone' ? 'bg-gray-900 text-white shadow-md' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}><Smartphone size={20} /></button>
-          <button onClick={() => setActiveDevice('android')} className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all ${activeDevice === 'android' ? 'bg-gray-900 text-white shadow-md' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}><Smartphone size={22} className="scale-110" /></button>
-          <button onClick={() => setActiveDevice('ipad')} className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all ${activeDevice === 'ipad' ? 'bg-gray-900 text-white shadow-md' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900'}`}><Tablet size={24} /></button>
+        {/* Stylized Vertical Device Switcher */}
+        <div className="flex flex-col gap-2 bg-white/80 backdrop-blur-xl p-2 rounded-[22px] shadow-2xl border border-white/50">
+          <button 
+            onClick={() => setActiveDevice('iphone')}
+            className={`group relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 ${
+              activeDevice === 'iphone' 
+              ? 'bg-gray-900 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]' 
+              : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+            }`}
+            title="iPhone 16 Pro"
+          >
+            <Smartphone size={20} strokeWidth={activeDevice === 'iphone' ? 2.5 : 2} />
+            {activeDevice === 'iphone' && (
+              <motion.div layoutId="activeGlow" className="absolute inset-0 rounded-2xl bg-white/5 blur-[2px]" />
+            )}
+          </button>
+
+          <button 
+            onClick={() => setActiveDevice('android')}
+            className={`group relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 ${
+              activeDevice === 'android' 
+              ? 'bg-gray-900 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]' 
+              : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+            }`}
+            title="Android Flagship"
+          >
+            <div className="relative">
+              <Smartphone size={20} strokeWidth={activeDevice === 'android' ? 2.5 : 2} className="rotate-0" />
+              <div className={`absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-500 border-2 border-white transition-opacity ${activeDevice === 'android' ? 'opacity-100' : 'opacity-0'}`} />
+            </div>
+          </button>
+
+          <button 
+            onClick={() => setActiveDevice('ipad')}
+            className={`group relative flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 ${
+              activeDevice === 'ipad' 
+              ? 'bg-gray-900 text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.3)]' 
+              : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+            }`}
+            title="iPad Pro"
+          >
+            <Tablet size={22} strokeWidth={activeDevice === 'ipad' ? 2.5 : 2} />
+            {activeDevice === 'ipad' && (
+              <motion.div layoutId="activeGlow" className="absolute inset-0 rounded-2xl bg-white/5 blur-[2px]" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -134,6 +175,7 @@ export default function App() {
         <AiAssistant isOpen={isAiChatOpen} onClose={() => setIsAiChatOpen(false)} isIPad={isIPad} />
         <Notifications isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} isIPad={isIPad} />
         <Profile isOpen={isProfileOpen} onClose={() => setIsProfileOpen(false)} isIPad={isIPad} />
+        <Cards isOpen={isCardsOpen} onClose={() => setIsCardsOpen(false)} isIPad={isIPad} />
 
         {/* Status Bar */}
         <div className={`absolute top-0 w-full flex justify-between items-center z-[60] pointer-events-none px-7 bg-[#FCFCFD] ${isIPad ? 'h-10' : 'h-[52px]'}`}>
@@ -150,7 +192,7 @@ export default function App() {
         {activeDevice === 'android' && <div className="absolute top-4 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#1a1a1c] rounded-full z-[60]"></div>}
         
         {/* Scrollable Area */}
-        <div className={`flex-1 overflow-y-auto bg-[#FCFCFD] scrollbar-hide ${isIPad ? 'pb-32' : 'pb-24'} pt-[40px]`}>
+        <div className={`flex-1 overflow-y-auto bg-[#FCFCFD] ${isIPad ? 'pb-32' : 'pb-24'} pt-[40px]`}>
           
           <header className={`px-6 pt-6 pb-4 flex justify-between items-center bg-[#FCFCFD]/90 backdrop-blur-md sticky top-0 z-20 ${isIPad ? 'px-12' : ''}`}>
             <div className="flex items-center gap-3">
@@ -177,11 +219,11 @@ export default function App() {
             <div className={`grid gap-4 ${isIPad ? 'grid-cols-2 gap-8' : 'grid-cols-2'}`}>
               <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-gradient-to-b from-gray-900 to-gray-800 text-white shadow-lg shadow-gray-200/50 ${isIPad ? 'p-8 rounded-[2rem]' : ''}`}>
                 <p className={`font-medium text-gray-300 mb-1 ${isIPad ? 'text-base' : 'text-xs'}`}>Estimated Value</p>
-                <h2 className={`font-semibold tracking-tight ${isIPad ? 'text-4xl' : 'text-2xl'}`}>$12,450</h2>
+                <h2 className={`font-semibold tracking-tight ${isIPad ? 'text-4xl' : 'text-2xl'}`}>₹83,000</h2>
               </motion.div>
               <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-white border border-gray-100 shadow-sm flex flex-col justify-between ${isIPad ? 'p-8 rounded-[2rem]' : ''}`}>
                 <p className={`font-medium text-gray-500 mb-1 ${isIPad ? 'text-base' : 'text-xs'}`}>Total Points</p>
-                <h2 className={`font-semibold tracking-tight text-gray-900 ${isIPad ? 'text-4xl' : 'text-2xl'}`}>845.2K</h2>
+                <h2 className={`font-semibold tracking-tight text-gray-900 ${isIPad ? 'text-4xl' : 'text-2xl'}`}>135K</h2>
               </motion.div>
             </div>
 
@@ -200,51 +242,54 @@ export default function App() {
             </motion.div>
 
             <div className={`grid gap-4 ${isIPad ? 'grid-cols-3 gap-6' : 'grid-cols-2'}`}>
+              
               <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow ${isIPad ? 'p-8 rounded-[2rem]' : ''}`}>
-                <div className={`rounded-full bg-gray-50 flex items-center justify-center mb-6 ${isIPad ? 'w-12 h-12 mb-8' : 'w-8 h-8'}`}><CreditCard size={isIPad ? 20 : 16} className="text-gray-600" /></div>
+                <div className={`rounded-full bg-gray-50 flex items-center justify-center mb-3 ${isIPad ? 'w-12 h-12 mb-4' : 'w-8 h-8'}`}><CreditCard size={isIPad ? 20 : 16} className="text-gray-600" /></div>
                 <div>
                   <h3 className={`font-semibold text-gray-900 mb-3 ${isIPad ? 'text-lg' : 'text-sm'}`}>Credit Cards</h3>
                   <div className="space-y-1.5">
-                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Points</span><span className="font-medium text-gray-900">320K</span></div>
-                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Value</span><span className="font-medium text-gray-900">$4,800</span></div>
+                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Points</span><span className="font-medium text-gray-900">45K</span></div>
+                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Value</span><span className="font-medium text-gray-900">₹22,500</span></div>
                   </div>
                 </div>
               </motion.div>
 
               <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow ${isIPad ? 'p-8 rounded-[2rem]' : ''}`}>
-                <div className={`rounded-full bg-gray-50 flex items-center justify-center mb-6 ${isIPad ? 'w-12 h-12 mb-8' : 'w-8 h-8'}`}><Plane size={isIPad ? 20 : 16} className="text-gray-600" /></div>
+                <div className={`rounded-full bg-gray-50 flex items-center justify-center mb-3 ${isIPad ? 'w-12 h-12 mb-4' : 'w-8 h-8'}`}><Plane size={isIPad ? 20 : 16} className="text-gray-600" /></div>
                 <div>
                   <h3 className={`font-semibold text-gray-900 mb-3 ${isIPad ? 'text-lg' : 'text-sm'}`}>Travel Miles</h3>
                   <div className="space-y-1.5">
-                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Points</span><span className="font-medium text-gray-900">410K</span></div>
-                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Value</span><span className="font-medium text-gray-900">$6,150</span></div>
+                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Points</span><span className="font-medium text-gray-900">62K</span></div>
+                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Value</span><span className="font-medium text-gray-900">₹46,500</span></div>
                   </div>
                 </div>
               </motion.div>
 
               <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow ${isIPad ? 'p-8 rounded-[2rem]' : ''}`}>
-                <div className={`rounded-full bg-gray-50 flex items-center justify-center mb-6 ${isIPad ? 'w-12 h-12 mb-8' : 'w-8 h-8'}`}><Building2 size={isIPad ? 20 : 16} className="text-gray-600" /></div>
+                <div className={`rounded-full bg-gray-50 flex items-center justify-center mb-3 ${isIPad ? 'w-12 h-12 mb-4' : 'w-8 h-8'}`}><Building2 size={isIPad ? 20 : 16} className="text-gray-600" /></div>
                 <div>
                   <h3 className={`font-semibold text-gray-900 mb-3 ${isIPad ? 'text-lg' : 'text-sm'}`}>Hotel Loyalty</h3>
                   <div className="space-y-1.5">
-                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Points</span><span className="font-medium text-gray-900">115K</span></div>
-                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Value</span><span className="font-medium text-gray-900">$1,500</span></div>
+                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Points</span><span className="font-medium text-gray-900">28K</span></div>
+                    <div className={`flex justify-between ${isIPad ? 'text-sm' : 'text-xs'}`}><span className="text-gray-500">Value</span><span className="font-medium text-gray-900">₹14,000</span></div>
                   </div>
                 </div>
               </motion.div>
 
-              <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-gray-50 border border-gray-100 flex group cursor-pointer hover:bg-gray-100 transition-colors ${isIPad ? 'col-span-3 flex-row items-center justify-between p-8 rounded-[2rem] mt-2' : 'flex-col justify-between'}`}>
+              {/* Redesigned Premium Discovery Card */}
+              <motion.div variants={itemVariants} className={`p-5 rounded-3xl bg-gray-900 text-white border border-gray-800 shadow-lg shadow-gray-900/20 flex group cursor-pointer hover:bg-gray-800 transition-colors ${isIPad ? 'col-span-3 flex-row items-center justify-between p-8 rounded-[2rem] mt-2' : 'flex-col justify-between'}`}>
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className={`font-semibold text-gray-900 ${isIPad ? 'text-lg' : 'text-sm'}`}>Discovery</h3>
-                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
+                    <h3 className={`font-semibold text-white ${isIPad ? 'text-lg' : 'text-sm'}`}>Discovery</h3>
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]"></div>
                   </div>
-                  <p className={`text-gray-500 leading-relaxed ${isIPad ? 'text-base' : 'text-xs'}`}>Latest card offers & travel upgrades.</p>
+                  <p className={`text-gray-400 leading-relaxed ${isIPad ? 'text-base' : 'text-xs'}`}>Latest card offers & travel upgrades.</p>
                 </div>
-                <div className={`flex items-center font-medium text-gray-900 group-hover:underline ${isIPad ? 'text-base bg-white px-6 py-3 rounded-full shadow-sm' : 'mt-4 text-xs'}`}>
+                <div className={`flex items-center font-medium text-white group-hover:text-blue-400 transition-colors ${isIPad ? 'text-base bg-white/10 px-6 py-3 rounded-full shadow-sm' : 'mt-4 text-xs'}`}>
                   Explore offers <ChevronRight size={isIPad ? 18 : 12} className="ml-1" />
                 </div>
               </motion.div>
+
             </div>
 
             <motion.div variants={itemVariants} className={`pt-2 w-full ${isIPad ? 'mt-8' : 'mt-4'}`}>
@@ -268,7 +313,7 @@ export default function App() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <h4 className={`font-semibold text-gray-900 ${isIPad ? 'text-lg' : 'text-sm'}`}>-115,000</h4>
+                    <h4 className={`font-semibold text-gray-900 ${isIPad ? 'text-lg' : 'text-sm'}`}>-15,000</h4>
                     <p className={`text-gray-500 ${isIPad ? 'text-sm mt-1' : 'text-xs'}`}>Today</p>
                   </div>
                 </div>
@@ -307,17 +352,17 @@ export default function App() {
 
         {/* Bottom Nav */}
         {isIPad ? (
-           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-max bg-white/90 backdrop-blur-2xl border border-gray-200/60 rounded-full px-8 py-4 flex gap-12 shadow-2xl z-20 items-center">
+           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 w-max bg-[#FCFCFD] border border-gray-200/60 rounded-full px-8 py-4 flex gap-12 shadow-[0_20px_50px_rgba(0,0,0,0.1)] z-20 items-center">
              <button className="text-gray-900 hover:scale-110 transition-transform"><Home size={24} className="fill-gray-900" /></button>
-             <button className="text-gray-400 hover:text-gray-900 hover:scale-110 transition-all"><CreditCard size={24} /></button>
-             <button onClick={() => setIsAiChatOpen(true)} className="w-14 h-14 rounded-full bg-gray-900 text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform"><Sparkles size={24} /></button>
+             <button onClick={() => setIsCardsOpen(true)} className="text-gray-400 hover:text-gray-900 hover:scale-110 transition-all"><CreditCard size={24} /></button>
+             <button onClick={() => setIsAiChatOpen(true)} className="w-16 h-16 rounded-full bg-gray-900 text-white flex items-center justify-center shadow-lg hover:scale-105 transition-transform"><Sparkles size={28} /></button>
              <button className="text-gray-400 hover:text-gray-900 hover:scale-110 transition-all"><Compass size={24} /></button>
              <button onClick={() => setIsProfileOpen(true)} className="text-gray-400 hover:text-gray-900 hover:scale-110 transition-all"><User size={24} /></button>
            </div>
         ) : (
-          <div className="absolute bottom-0 w-full bg-white/90 backdrop-blur-lg border-t border-gray-100 px-6 py-5 pb-8 flex justify-between items-center z-20">
+          <div className="absolute bottom-0 w-full bg-[#FCFCFD] border-t border-gray-100 px-6 py-5 pb-8 flex justify-between items-center z-20">
             <button className="flex flex-col items-center gap-1 text-gray-900"><Home size={20} className="fill-gray-900" /><span className="text-[10px] font-medium">Home</span></button>
-            <button className="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition-colors"><CreditCard size={20} /><span className="text-[10px] font-medium">Cards</span></button>
+            <button onClick={() => setIsCardsOpen(true)} className="flex flex-col items-center gap-1 text-gray-400 hover:text-gray-900 transition-colors"><CreditCard size={20} /><span className="text-[10px] font-medium">Cards</span></button>
             <div className="relative -top-5">
               <button onClick={() => setIsAiChatOpen(true)} className="w-14 h-14 rounded-full bg-gray-900 text-white flex items-center justify-center shadow-xl shadow-gray-300 hover:scale-105 transition-transform"><Sparkles size={24} /></button>
             </div>

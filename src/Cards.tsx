@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { 
-  ChevronLeft, Lock, Eye, Settings, Utensils, Plane, ShoppingBag, CheckCircle2
+  ChevronLeft, Lock, Eye, Settings, Utensils, Plane, ShoppingBag, CheckCircle2, Wifi
 } from 'lucide-react';
 
 interface CardsProps {
@@ -10,7 +10,7 @@ interface CardsProps {
   isIPad?: boolean;
 }
 
-// Mock Data for the Cards
+// FIXED: Using standard Tailwind colors guarantees the gradients will compile perfectly
 const mockCards = [
   {
     id: 1,
@@ -19,8 +19,9 @@ const mockCards = [
     network: 'Visa Infinite',
     points: '320,450',
     value: '$4,800',
-    gradient: 'from-[#111111] via-[#1a1a1c] to-[#2a2a2d]', // Matte Black
+    gradient: 'from-slate-900 via-gray-900 to-black', 
     textColor: 'text-white',
+    ring: 'ring-1 ring-white/10 shadow-2xl shadow-black/40',
     multipliers: [
       { category: 'Travel', rate: '5x', icon: Plane },
       { category: 'Dining', rate: '3x', icon: Utensils },
@@ -33,8 +34,9 @@ const mockCards = [
     network: 'Mastercard',
     points: '185,000',
     value: '$1,850',
-    gradient: 'from-[#E2E2E2] via-[#F5F5F5] to-[#FFFFFF]', // Frosted Titanium
+    gradient: 'from-gray-100 via-white to-gray-200', 
     textColor: 'text-gray-900',
+    ring: 'ring-1 ring-black/5 shadow-xl shadow-gray-300/50',
     multipliers: [
       { category: 'Shopping', rate: '4x', icon: ShoppingBag },
       { category: 'Everything', rate: '1.5x', icon: CheckCircle2 },
@@ -47,8 +49,9 @@ const mockCards = [
     network: 'Visa Signature',
     points: '64,200',
     value: '$642',
-    gradient: 'from-[#0f172a] via-[#1e293b] to-[#334155]', // Midnight Blue
+    gradient: 'from-slate-800 via-indigo-950 to-slate-900', 
     textColor: 'text-white',
+    ring: 'ring-1 ring-white/10 shadow-xl shadow-indigo-900/20',
     multipliers: [
       { category: 'Travel', rate: '3x', icon: Plane },
       { category: 'Dining', rate: '2x', icon: Utensils },
@@ -60,6 +63,7 @@ export default function Cards({ isOpen, onClose, isIPad }: CardsProps) {
   const [activeCardId, setActiveCardId] = useState(mockCards[0].id);
 
   const activeCard = mockCards.find(c => c.id === activeCardId) || mockCards[0];
+  const inactiveCards = mockCards.filter(c => c.id !== activeCardId);
 
   const pageVariants: Variants = {
     hidden: { x: '100%' },
@@ -68,8 +72,8 @@ export default function Cards({ isOpen, onClose, isIPad }: CardsProps) {
   };
 
   const contentVariants: Variants = {
-    hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    hidden: { opacity: 0, y: 15 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
     exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
   };
 
@@ -83,11 +87,9 @@ export default function Cards({ isOpen, onClose, isIPad }: CardsProps) {
           exit="exit"
           className="absolute inset-0 z-[45] bg-[#FCFCFD] flex flex-col"
         >
-          {/* Safe Area Top Spacing */}
           <div className={`w-full ${isIPad ? 'h-10' : 'h-[52px]'}`}></div>
 
-          {/* Header */}
-          <header className={`px-6 pt-4 pb-2 flex items-center justify-between sticky top-0 z-10 bg-[#FCFCFD] ${isIPad ? 'px-12 pt-8' : ''}`}>
+          <header className={`px-6 pt-4 pb-4 flex items-center justify-between sticky top-0 z-20 bg-[#FCFCFD]/90 backdrop-blur-md ${isIPad ? 'px-12 pt-8' : ''}`}>
             <button onClick={onClose} className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors -ml-2">
               <ChevronLeft size={24} />
             </button>
@@ -97,50 +99,60 @@ export default function Cards({ isOpen, onClose, isIPad }: CardsProps) {
 
           <div className="flex-1 overflow-y-auto scrollbar-hide pb-32">
             
-            {/* Horizontal Card Carousel */}
-            <div className={`w-full overflow-x-auto scrollbar-hide flex gap-4 px-6 pt-6 pb-8 snap-x snap-mandatory ${isIPad ? 'px-12' : ''}`}>
-              {mockCards.map((card) => (
-                <div 
-                  key={card.id}
-                  onClick={() => setActiveCardId(card.id)}
-                  className={`relative shrink-0 w-[280px] h-[175px] rounded-[1.25rem] p-5 flex flex-col justify-between snap-center cursor-pointer transition-all duration-300 ${isIPad ? 'w-[320px] h-[200px]' : ''} ${
-                    activeCardId === card.id 
-                      ? 'scale-100 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)]' 
-                      : 'scale-90 opacity-60 shadow-none'
-                  }`}
-                >
-                  {/* Card Background Gradient */}
-                  <div className={`absolute inset-0 bg-gradient-to-tr ${card.gradient} rounded-[1.25rem] border border-white/10`} />
-                  
-                  {/* Glassmorphism Shine */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50 rounded-[1.25rem]" />
-
-                  {/* Card Content */}
-                  <div className={`relative z-10 flex justify-between items-start ${card.textColor}`}>
-                    <span className="font-semibold tracking-wider text-sm opacity-90">{card.name}</span>
-                    <span className="text-xs font-medium opacity-70">{card.network}</span>
-                  </div>
-
-                  <div className={`relative z-10 flex justify-between items-end ${card.textColor}`}>
-                    <div className="flex gap-1.5 items-center">
-                      <div className="flex gap-0.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-current opacity-70"></div>
-                        <div className="w-1.5 h-1.5 rounded-full bg-current opacity-70"></div>
-                        <div className="w-1.5 h-1.5 rounded-full bg-current opacity-70"></div>
-                        <div className="w-1.5 h-1.5 rounded-full bg-current opacity-70"></div>
-                      </div>
-                      <span className="font-medium tracking-widest ml-1">{card.last4}</span>
-                    </div>
-                    <div className="w-8 h-5 rounded bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                      <div className="w-4 h-3 rounded-sm bg-white/40"></div>
-                    </div>
-                  </div>
+            {/* HERO CARD SLOT */}
+            <div className={`px-6 pt-2 pb-8 ${isIPad ? 'px-12 max-w-4xl mx-auto' : ''}`}>
+              <motion.div
+                layoutId={`card-container-${activeCard.id}`}
+                className={`relative w-full aspect-[1.58/1] rounded-[1.5rem] p-6 flex flex-col justify-between bg-gradient-to-tr ${activeCard.gradient} ${activeCard.ring}`}
+              >
+                {/* Shiny overlay for realistic plastic/metal feel */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 rounded-[1.5rem] pointer-events-none" />
+                
+                <div className={`relative z-10 flex justify-between items-start ${activeCard.textColor}`}>
+                  <span className="font-bold tracking-wider text-lg opacity-90">{activeCard.name}</span>
+                  <Wifi size={24} className="opacity-70 rotate-90" />
                 </div>
-              ))}
+
+                <div className={`relative z-10 flex justify-between items-end ${activeCard.textColor}`}>
+                  <div className="flex flex-col">
+                     <span className="text-[10px] font-medium opacity-60 mb-1 uppercase tracking-widest">Card Number</span>
+                     <div className="flex gap-3 items-center">
+                       <span className="tracking-widest text-lg opacity-80">••••</span>
+                       <span className="tracking-widest text-lg opacity-80">••••</span>
+                       <span className="font-medium tracking-widest text-lg">{activeCard.last4}</span>
+                     </div>
+                  </div>
+                  <span className="font-bold italic opacity-90">{activeCard.network}</span>
+                </div>
+              </motion.div>
             </div>
 
-            {/* Dynamic Content Below Card */}
-            <div className={`px-6 space-y-8 ${isIPad ? 'max-w-4xl mx-auto px-12' : ''}`}>
+            {/* INACTIVE WALLET ROW */}
+            <div className={`px-6 mb-8 ${isIPad ? 'px-12 max-w-4xl mx-auto' : ''}`}>
+              <h3 className="text-xs font-bold text-gray-400 mb-4 uppercase tracking-widest">Other Cards</h3>
+              <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
+                {inactiveCards.map((card) => (
+                  <motion.div
+                    key={card.id}
+                    layoutId={`card-container-${card.id}`}
+                    onClick={() => setActiveCardId(card.id)}
+                    className={`relative shrink-0 w-[200px] aspect-[1.58/1] rounded-xl p-4 flex flex-col justify-between bg-gradient-to-tr ${card.gradient} shadow-md cursor-pointer hover:-translate-y-1 transition-transform`}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-50 rounded-xl pointer-events-none" />
+                    
+                    <div className={`relative z-10 ${card.textColor}`}>
+                      <span className="font-semibold text-sm opacity-90">{card.name}</span>
+                    </div>
+                    <div className={`relative z-10 flex justify-between items-end ${card.textColor}`}>
+                      <span className="font-medium tracking-widest text-xs opacity-80">•••• {card.last4}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* DYNAMIC CARD DATA */}
+            <div className={`px-6 space-y-8 border-t border-gray-100 pt-8 ${isIPad ? 'max-w-4xl mx-auto px-12' : ''}`}>
               <AnimatePresence mode="wait">
                 <motion.div 
                   key={activeCard.id}
@@ -199,6 +211,7 @@ export default function Cards({ isOpen, onClose, isIPad }: CardsProps) {
                 </motion.div>
               </AnimatePresence>
             </div>
+            
           </div>
         </motion.div>
       )}
